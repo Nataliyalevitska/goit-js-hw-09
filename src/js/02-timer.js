@@ -6,7 +6,7 @@ const options = {
   //настройка
   enableTime: true,
   time_24hr: true,
-  defaultDate: new Date(),
+  defaultDate: null,
   minuteIncrement: 1,
   onClose(selectedDates) {
     console.log(selectedDates[0]);
@@ -31,10 +31,10 @@ class Timer {
   start() {
     if (new Date(this.date.value).getTime() < Date.now()) {
       Notiflix.Notify.failure('Please choose a date in the future');
-      return;
+      return (this.date.value = '');
     }
 
-    startBtn.setAttribute('disabled', true);
+    startBtn.disabled = true;
 
     this.intervalId = setInterval(() => {
       //написать остановку таймера
@@ -45,8 +45,9 @@ class Timer {
 
       if (diff < 0) {
         clearInterval(this.intervalId);
+        this.date.value = '';
         Notiflix.Notify.success('Time is over.');
-        return;
+        return (startBtn.disabled = false);
       }
 
       const convartDate = this.convertMs(diff);
